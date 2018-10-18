@@ -10,17 +10,7 @@ yarn install
 yarn run serve
 ```
 
-### Compiles and minifies for production
-```
-yarn run build
-```
 
-### Run your tests
-```
-yarn run test
-```
+### Live Demo ###
 
-### Lints and fixes files
-```
-yarn run lint
-```
+https://attenti-islands-test.herokuapp.com/#/
