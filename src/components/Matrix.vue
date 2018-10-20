@@ -45,13 +45,13 @@
 
             this.$store.getters.matrix[row][col] = this.$store.getters.matrix[row][col] === 1 ? 0 : 1;
 
-            if(this.$store.getters.matrix[row][col]) {
-                ctx.fillStyle = this.getColor(this.$store.getters.matrix[row][col]);
-                ctx.fillRect(col * this.cellWidth , row * this.cellHeight, this.cellWidth, this.cellHeight);
-            }
+            ctx.fillStyle = this.getColor(this.$store.getters.matrix[row][col]);
+            ctx.fillRect(col * this.cellWidth , row * this.cellHeight, this.cellWidth, this.cellHeight);
+
+            ctx.strokeStyle = '#000';
+            ctx.strokeRect(col * this.cellWidth , row * this.cellHeight, this.cellWidth, this.cellHeight);
 
             ctx.fill();
-
         }
 
         mounted() {
