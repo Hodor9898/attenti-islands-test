@@ -40,12 +40,8 @@
             const x = event.clientX - event.target.offsetLeft;
             const y = event.clientY - event.target.offsetTop;
 
-            console.log(x, y)
-
             let col = Math.floor(x / this.cellWidth);
             let row = Math.floor(y / this.cellHeight);
-
-            console.log(row,col)
 
             this.$store.getters.matrix[row][col] = this.$store.getters.matrix[row][col] === 1 ? 0 : 1;
 
@@ -62,15 +58,21 @@
             let can: any = this.$refs.board;
             let ctx = can.getContext("2d");
 
-            for (let i = 0; i < this.$store.getters.matrixDimensions.rows; i++) {
-                for (let j = 0; j < this.$store.getters.matrixDimensions.cols; j++) {
-                    if(this.$store.getters.matrix[i][j]) {
-                        ctx.fillStyle = this.getColor(this.$store.getters.matrix[i][j]);
-                        ctx.fillRect(j * this.cellWidth , i * this.cellHeight, this.cellWidth, this.cellHeight);
+            const mat = this.$store.getters.matrix.slice(0);
+            const rows = this.$store.getters.matrixDimensions.rows;
+            const cols = this.$store.getters.matrixDimensions.cols;
+            const cellWidth = this.cellWidth;
+            const cellHeight = this.cellHeight;
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if(mat[i][j]) {
+                        ctx.fillStyle = this.getColor(mat[i][j]);
+                        ctx.fillRect(j * cellWidth , i * cellHeight, cellWidth, cellHeight);
                     }
 
-                    ctx.strokeStyle = this.getColor(this.$store.getters.matrix[i][j] || 1);
-                    ctx.strokeRect(j * this.cellWidth, i* this.cellHeight, this.cellWidth, this.cellHeight);
+                    ctx.strokeStyle = this.getColor(mat[i][j] || 1);
+                    ctx.strokeRect(j * cellWidth, i* cellHeight, cellWidth, cellHeight);
                 }
             }
 
