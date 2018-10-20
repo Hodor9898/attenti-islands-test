@@ -61,6 +61,7 @@
             const mat = this.$store.getters.matrix.slice(0);
             const rows = this.$store.getters.matrixDimensions.rows;
             const cols = this.$store.getters.matrixDimensions.cols;
+
             const cellWidth = this.cellWidth;
             const cellHeight = this.cellHeight;
 
