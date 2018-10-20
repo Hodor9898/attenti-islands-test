@@ -4,7 +4,7 @@
 
     <div class="row mb-2">
       <div class="col text-center">
-        <input class="form-control" type="number" v-model="size"/>
+        <input class="form-control" type="text" v-model="size"/>
       </div>
     </div>
 
@@ -27,21 +27,19 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Home extends Vue {
-    private size: number = 0;
+    private size: string = '';
 
     randomize() {
-        this.size = parseInt(this.size.toString());
+      if(!this.size.match(/^[0-9]*[x][0-9]*$/g)) return alert('Please enter the matrix size with the format 100x100');
 
-        if(this.size <= 0 || isNaN(this.size)) return alert('The matrix`s size must be greater than 0');
-
-        let dim = this.initMatrix();
+      let dim = this.initMatrix();
 
       let randomMatrix: number[][] = [];
 
-      for(let i = 0; i < dim.x; i ++) {
+      for(let i = 0; i < dim.rows; i ++) {
           randomMatrix.push([]);
 
-          for(let j = 0; j < dim.y; j++) {
+          for(let j = 0; j < dim.cols; j++) {
               randomMatrix[i].push(Math.round(Math.random()))
           }
       }
@@ -51,18 +49,16 @@ export default class Home extends Vue {
     }
 
     bonusDraw() {
-        this.size = parseInt(this.size.toString());
-
-        if(this.size <= 0 || isNaN(this.size)) return alert('The matrix`s size must be greater than 0');
+        if(!this.size.match(/^[0-9]*[x][0-9]*$/g)) return alert('Please enter the matrix size with the format 100x100');
 
         let dim = this.initMatrix();
 
         let emptyMatrix: number[][] = [];
 
-        for(let i = 0; i < dim.x; i ++) {
+        for(let i = 0; i < dim.rows; i ++) {
             emptyMatrix.push([]);
 
-            for(let j = 0; j < dim.y; j++) {
+            for(let j = 0; j < dim.cols; j++) {
                 emptyMatrix[i].push(0)
             }
         }
@@ -72,12 +68,12 @@ export default class Home extends Vue {
     }
 
     initMatrix() {
-        const dimX: number = parseInt(Math.sqrt(this.size).toFixed(0));
-        const dimY: number = parseInt((this.size / dimX).toFixed(0));
+        const dimRows: number = parseInt(this.size.split('x')[0]);
+        const dimCols: number = parseInt(this.size.split('x')[1]);
 
         const dimensions = {
-            x: dimX,
-            y: dimY
+            rows: dimRows,
+            cols: dimCols
         };
 
         this.$store.commit('updateMatrixDimensions', dimensions);

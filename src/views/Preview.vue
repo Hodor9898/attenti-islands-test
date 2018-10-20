@@ -31,8 +31,8 @@
         solve() {
             MatrixService.numberOfIslands(
                 this.$store.getters.matrix,
-                this.$store.getters.matrixDimensions.x,
-                this.$store.getters.matrixDimensions.y,
+                this.$store.getters.matrixDimensions.rows,
+                this.$store.getters.matrixDimensions.cols,
             )
                 .then((count: any) => {
                     this.$store.commit('updateNumberOfIslands', count);

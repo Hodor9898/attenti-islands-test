@@ -7,8 +7,8 @@ export default new Vuex.Store({
     state: {
         matrix: [],
         matrixDimensions: {
-            x: 0,
-            y: 0,
+            rows: 0,
+            cols: 0,
         },
         numberOfIslands: 0
     },

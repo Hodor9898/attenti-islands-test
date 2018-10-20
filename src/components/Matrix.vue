@@ -1,8 +1,6 @@
 <template>
-    <div class="matrix">
-        <div class="mat-r" v-for="(row, rowIdx) in matrix">
-            <div class="cube" v-for="(cell, colIdx) in row" v-bind:style="{width: blockSize + 'px', height: blockSize + 'px', 'background-color': getColor(cell)}" @click="handleCubePress(rowIdx, colIdx)"></div>
-        </div>
+    <div class="clearfix" id="matrix" v-on:click="handleMatrixClick">
+        <canvas ref="board" width="500" height="500"></canvas>
     </div>
 </template>
 
@@ -17,17 +15,6 @@
     export default class Matrix extends Vue {
         @Prop() public editable!: boolean;
 
-        get blockSize() {
-            let x = this.$store.getters.matrixDimensions.x;
-            let y = this.$store.getters.matrixDimensions.y;
-
-            return (x > y) ? (WIDTH / x) : (HEIGHT / y);
-        }
-
-        get matrix() {
-            return this.$store.getters.matrix
-        }
-
         getColor(val: number) {
             if(MatrixService.colors[val] === undefined) {
                 MatrixService.colors[val] = '#'+Math.floor(Math.random()*16777215).toString(16);
@@ -36,39 +23,63 @@
             return MatrixService.colors[val];
         }
 
-        handleCubePress(rowIdx: number, colIdx: number) {
+        get cellWidth() {
+            return WIDTH / this.$store.getters.matrixDimensions.cols;
+        }
+
+        get cellHeight() {
+            return HEIGHT / this.$store.getters.matrixDimensions.rows;
+        }
+
+        handleMatrixClick(event: any) {
             if(!this.editable) return;
 
-            let mat = this.$store.getters.matrix;
-            mat[rowIdx][colIdx] = mat[rowIdx][colIdx] ? 0 : 1;
+            const can: any = this.$refs.board;
+            const ctx = can.getContext("2d");
 
-            this.$store.commit('updateMatrix', mat.slice(0));
+            const x = event.clientX - event.target.offsetLeft;
+            const y = event.clientY - event.target.offsetTop;
+
+            console.log(x, y)
+
+            let col = Math.floor(x / this.cellWidth);
+            let row = Math.floor(y / this.cellHeight);
+
+            console.log(row,col)
+
+            this.$store.getters.matrix[row][col] = this.$store.getters.matrix[row][col] === 1 ? 0 : 1;
+
+            if(this.$store.getters.matrix[row][col]) {
+                ctx.fillStyle = this.getColor(this.$store.getters.matrix[row][col]);
+                ctx.fillRect(col * this.cellWidth , row * this.cellHeight, this.cellWidth, this.cellHeight);
+            }
+
+            ctx.fill();
+
+        }
+
+        mounted() {
+            let can: any = this.$refs.board;
+            let ctx = can.getContext("2d");
+
+            for (let i = 0; i < this.$store.getters.matrixDimensions.rows; i++) {
+                for (let j = 0; j < this.$store.getters.matrixDimensions.cols; j++) {
+                    if(this.$store.getters.matrix[i][j]) {
+                        ctx.fillStyle = this.getColor(this.$store.getters.matrix[i][j]);
+                        ctx.fillRect(j * this.cellWidth , i * this.cellHeight, this.cellWidth, this.cellHeight);
+                    }
+
+                    ctx.strokeStyle = this.getColor(this.$store.getters.matrix[i][j] || 1);
+                    ctx.strokeRect(j * this.cellWidth, i* this.cellHeight, this.cellWidth, this.cellHeight);
+                }
+            }
+
+            ctx.fill();
         }
     }
 
 </script>
 
-<style scoped>
-    .mat-r:nth-child(odd) .cube {
-        border-top: 1px solid #000;
-        border-bottom: 1px solid #000;
-    }
-
-    .mat-r:first-child .cube {
-        border-top: 1px solid #000;
-    }
-
-    .mat-r:last-child .cube {
-        border-bottom: 1px solid #000;
-    }
-
-    .cube {
-        float: left;
-        border-right: 1px solid #000;
-    }
-
-    .cube:first-child {
-        border-left: 1px solid #000;
-    }
+<style>
 </style>
 
